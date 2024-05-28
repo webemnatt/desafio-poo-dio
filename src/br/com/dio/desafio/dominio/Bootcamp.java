@@ -10,7 +10,7 @@ public class Bootcamp {
   private String descricao;
   private final LocalDate dataInicio = LocalDate.now();
   private final LocalDate dataFim = dataInicio.plusDays(45);
-  private Set<Dev> devs = new HashSet<>();
+  private Set<Dev> devsInscritos = new HashSet<>();
   private Set<Conteudo> conteudos = new LinkedHashSet<>();
 
   public String getNome() {
@@ -37,12 +37,12 @@ public class Bootcamp {
     return dataFim;
   }
 
-  public Set<Dev> getDevs() {
-    return devs;
+  public Set<Dev> getDevsInscritos() {
+    return devsInscritos;
   }
 
-  public void setDevs(Set<Dev> devs) {
-    this.devs = devs;
+  public void setDevsInscritos(Set<Dev> devsInscritos) {
+    this.devsInscritos = devsInscritos;
   }
 
   public Set<Conteudo> getConteudos() {
@@ -52,7 +52,7 @@ public class Bootcamp {
   public void setConteudos(Set<Conteudo> conteudos) {
     this.conteudos = conteudos;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -61,7 +61,7 @@ public class Bootcamp {
     result = prime * result + ((descricao == null) ? 0 : descricao.hashCode());
     result = prime * result + ((dataInicio == null) ? 0 : dataInicio.hashCode());
     result = prime * result + ((dataFim == null) ? 0 : dataFim.hashCode());
-    result = prime * result + ((devs == null) ? 0 : devs.hashCode());
+    result = prime * result + ((devsInscritos == null) ? 0 : devsInscritos.hashCode());
     result = prime * result + ((conteudos == null) ? 0 : conteudos.hashCode());
     return result;
   }
@@ -95,10 +95,10 @@ public class Bootcamp {
         return false;
     } else if (!dataFim.equals(other.dataFim))
       return false;
-    if (devs == null) {
-      if (other.devs != null)
+    if (devsInscritos == null) {
+      if (other.devsInscritos != null)
         return false;
-    } else if (!devs.equals(other.devs))
+    } else if (!devsInscritos.equals(other.devsInscritos))
       return false;
     if (conteudos == null) {
       if (other.conteudos != null)
@@ -111,7 +111,7 @@ public class Bootcamp {
   @Override
   public String toString() {
     return "Bootcamp [nome=" + nome + ", descricao=" + descricao + ", dataInicio=" + dataInicio + ", dataFim=" + dataFim
-        + ", devs=" + devs + ", conteudos=" + conteudos + "]";
+        + ", devsInscritos=" + devsInscritos + ", conteudos=" + conteudos + "]";
   }
 
 }
