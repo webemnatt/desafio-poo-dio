@@ -28,7 +28,8 @@ public class Dev {
    * na ordem dos cursos listados.
    */
   public void progredir() {
-    Optional<Conteudo> primeiroConteudo = this.conteudosConcluidos.stream().findFirst();
+    // encontra o primeiro conteudo de
+    Optional<Conteudo> primeiroConteudo = this.conteudosInscritos.stream().findFirst();
     if (primeiroConteudo.isPresent()) {
       conteudosConcluidos.add(primeiroConteudo.get());
       conteudosInscritos.remove(primeiroConteudo.get());
