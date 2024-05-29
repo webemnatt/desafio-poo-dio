@@ -7,6 +7,11 @@ public class Dev {
   // SET porque não há como se inscrever 2x no mesmo curso
   private Set<Conteudo> conteudosInscritos = new LinkedHashSet<>();
   private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
+  private Set<Bootcamp> bootcampsInscritos = new LinkedHashSet<>();
+
+  public Dev(String nome) {
+    this.nome = nome;
+  }
 
   /**
    * Método que adiciona todos os conteúdos do bootcamp no set de conteudos
@@ -18,6 +23,7 @@ public class Dev {
    * @param bootcamp do tipo Bootcamp
    */
   public void inscreverBootCamp(Bootcamp bootcamp) {
+    this.bootcampsInscritos.add(bootcamp);
     this.conteudosInscritos.addAll(bootcamp.getConteudos());
     bootcamp.getDevsInscritos().add(this);
   }
@@ -42,13 +48,37 @@ public class Dev {
    * Método que calcula total de xps dos conteúdos concluídos e retorna a soma
    * deles.
    * 
-   * @return
+   * @return um double com o total de XPs acumulados
    */
   public double calcularTotalXp() {
     return conteudosConcluidos.stream()
         // .mapToDouble(conteudo -> conteudo.calcularXP())
         .mapToDouble(Conteudo::calcularXP)
         .sum();
+  }
+
+  /**
+   * Método que exibe o progresso em todos os bootcamps que o desenvolvedor
+   * estiver inscrito.
+   */
+  public void verProgresso() {
+    for (Bootcamp bootcamp : getBootcampsInscritos()) {
+      System.out.println("Bootcamp: " + bootcamp.getNome());
+      int cursosConcluidos = 0;
+      int cursosPorFazer = 0;
+      for (Conteudo aula : bootcamp.getConteudos()) {
+        if (getConteudosConcluidos().contains(aula)) {
+          cursosConcluidos++;
+        } else if (getConteudosInscritos().contains(aula)) {
+          cursosPorFazer++;
+        }
+      }
+      System.out.println("Cursos concluídos:\t" + cursosConcluidos + " / cursos por fazer: "
+          + cursosPorFazer);
+      System.out.println("Progresso: "
+          + ((double) cursosConcluidos / (cursosConcluidos + cursosPorFazer) * 100) + "%");
+      System.out.println();
+    }
   }
 
   public String getNome() {
@@ -73,6 +103,14 @@ public class Dev {
 
   public void setConteudosConcluidos(Set<Conteudo> conteudosConcluidos) {
     this.conteudosConcluidos = conteudosConcluidos;
+  }
+
+  public Set<Bootcamp> getBootcampsInscritos() {
+    return bootcampsInscritos;
+  }
+
+  public void setBootcampsInscritos(Set<Bootcamp> bootcampsInscritos) {
+    this.bootcampsInscritos = bootcampsInscritos;
   }
 
   @Override
@@ -115,7 +153,7 @@ public class Dev {
   @Override
   public String toString() {
     return "Dev [nome=" + nome + ", conteudosInscritos=" + conteudosInscritos + ", conteudosConcluidos="
-        + conteudosConcluidos + "]";
+        + conteudosConcluidos + ", bootcampsInscritos=" + bootcampsInscritos + "]";
   }
 
 }
