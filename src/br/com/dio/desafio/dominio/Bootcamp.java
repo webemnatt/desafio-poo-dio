@@ -5,6 +5,18 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Classe que cria um bootcamp.
+ * Tem como atributos nome e descricao do tipo String, dataInicio e dataFim do
+ * tipo LocalDate, devsInscritos do tipo Set<Dev> e conteudos do tipo
+ * Set<Conteudo>.
+ * 
+ * Possui construtor que inicializa as variáveis nome, descricao.
+ * 
+ * @author webemnatt
+ * @since 05/28/24
+ * @version 1.0.0
+ */
 public class Bootcamp {
   private String nome;
   private String descricao;

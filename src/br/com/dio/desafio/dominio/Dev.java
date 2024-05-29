@@ -2,9 +2,28 @@ package br.com.dio.desafio.dominio;
 
 import java.util.*;
 
+/**
+ * Classe que cria um aluno desenvolvedor.
+ * Tem como atributos nome do tipo String, conteudosInscritos e
+ * conteudosConcluidos do tipo Set<Conteudo> e bootcampsInscritos do tipo
+ * Set<Bootcamp>.
+ * 
+ * Possui construtor que inicializa a variável nome.
+ * 
+ * Possui os métodos:
+ * 
+ * <strong>inscreverBootCamp</strong>,
+ * <strong>progredir</strong>,
+ * <strong>calcularTotalXp</strong>,
+ * <strong>cancelarInscricao</strong>, e
+ * <strong>verProgresso</strong>.
+ * 
+ * @author webemnatt
+ * @since 05/28/24
+ * @version 1.0.0
+ */
 public class Dev {
   private String nome;
-  // SET porque não há como se inscrever 2x no mesmo curso
   private Set<Conteudo> conteudosInscritos = new LinkedHashSet<>();
   private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
   private Set<Bootcamp> bootcampsInscritos = new LinkedHashSet<>();
@@ -52,32 +71,59 @@ public class Dev {
    */
   public double calcularTotalXp() {
     return conteudosConcluidos.stream()
-        // .mapToDouble(conteudo -> conteudo.calcularXP())
         .mapToDouble(Conteudo::calcularXP)
         .sum();
   }
 
   /**
-   * Método que exibe o progresso em todos os bootcamps que o desenvolvedor
+   * Método que cancela a inscrição em um bootcamp
+   * 
+   * @param bootcamp do tipo Bootcamp
+   */
+  public void cancelarInscricao(Bootcamp bootcamp) {
+    this.conteudosInscritos.removeAll(bootcamp.getConteudos());
+    this.conteudosConcluidos.removeAll(bootcamp.getConteudos());
+    for (Bootcamp bootcampInscrito : this.getBootcampsInscritos()) {
+      if (bootcampInscrito.equals(bootcamp)) {
+        Set<Dev> devsInscritos = new LinkedHashSet<>(bootcampInscrito.getDevsInscritos());
+        for (Dev desenvolvedorInscrito : devsInscritos) {
+          if (desenvolvedorInscrito.getNome().equals(this.getNome())) {
+            devsInscritos.remove(this);
+          }
+        }
+        bootcampInscrito.setDevsInscritos(devsInscritos);
+        this.getBootcampsInscritos().remove(bootcampInscrito);
+      }
+    }
+  }
+
+  /**
+   * Método que exibe o progresso em porcentagem de todos os bootcamps que o
+   * desenvolvedor
    * estiver inscrito.
+   * Mostra quantos cursos concluídos e quantos tem a fazer.
+   * Se tiver concluído tudo, cancela a inscrição do bootcamp concluído.
    */
   public void verProgresso() {
-    for (Bootcamp bootcamp : getBootcampsInscritos()) {
+
+    for (Bootcamp bootcamp : this.bootcampsInscritos) {
       System.out.println("Bootcamp: " + bootcamp.getNome());
       int cursosConcluidos = 0;
       int cursosPorFazer = 0;
       for (Conteudo aula : bootcamp.getConteudos()) {
-        if (getConteudosConcluidos().contains(aula)) {
+        if (this.conteudosConcluidos.contains(aula)) {
           cursosConcluidos++;
-        } else if (getConteudosInscritos().contains(aula)) {
+        } else if (this.conteudosInscritos.contains(aula)) {
           cursosPorFazer++;
         }
       }
       System.out.println("Cursos concluídos:\t" + cursosConcluidos + " / cursos por fazer: "
           + cursosPorFazer);
-      System.out.println("Progresso: "
-          + ((double) cursosConcluidos / (cursosConcluidos + cursosPorFazer) * 100) + "%");
-      System.out.println();
+      double porcentagem = (double) cursosConcluidos / (cursosConcluidos + cursosPorFazer);
+      System.out.println(String.format("Progresso: %.2f%%\n", porcentagem * 100));
+      if (porcentagem == 1) {
+        cancelarInscricao(bootcamp);
+      }
     }
   }
 

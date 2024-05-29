@@ -1,7 +1,7 @@
 package br.com.dio.desafio;
 
 import java.time.LocalDate;
-import java.util.Scanner;
+import java.util.*;
 
 import br.com.dio.desafio.dominio.Bootcamp;
 import br.com.dio.desafio.dominio.Conteudo;
@@ -12,13 +12,10 @@ import br.com.dio.desafio.dominio.Mentoria;
 public class Main {
     public static void main(String[] args) throws Exception {
         Curso cursoJava = new Curso("curso Java", "descricao curso java", 8);
-        System.out.println(cursoJava);
 
         Curso cursoPOO = new Curso("curso POO", "descricao curso Programação Orientada a Objetos", 5);
-        System.out.println(cursoPOO);
 
         Curso curso2 = new Curso("curso Javascript", "descricao curso javascript", 12);
-        System.out.println(curso2);
 
         Mentoria mentoriaJava = new Mentoria("mentoria Java", "descricao mentoria java", LocalDate.now());
 
@@ -37,6 +34,30 @@ public class Main {
         bootcampJS.getConteudos().add(curso2);
         bootcampJS.getConteudos().add(mentoriaJs);
 
+        // Dev dev1 = new Dev("Sara");
+        // dev1.inscreverBootCamp(bootcampJava);
+        // dev1.inscreverBootCamp(bootcampJS);
+        // for (Bootcamp bc : dev1.getBootcampsInscritos()) {
+        // System.out.println(bc.getNome());
+        // // System.out.println(bc.getConteudos());
+        // // imprimir os devs inscritos no bootcamp:
+        // for (Dev d : bc.getDevsInscritos()) {
+        // System.out.println(d.getNome());
+        // }
+        // }
+
+        // System.out.println("----cancelando inscrição---------");
+        // dev1.cancelarInscricao(bootcampJS);
+
+        // for (Bootcamp bc : dev1.getBootcampsInscritos()) {
+        // System.out.println(bc.getNome());
+        // // System.out.println(bc.getConteudos());
+        // // imprimir os devs inscritos no bootcamp:
+        // for (Dev d : bc.getDevsInscritos()) {
+        // System.out.println(d.getNome());
+        // }
+        // }
+
         System.out.println("----------Menu aluno-----------");
         Scanner scanner = new Scanner(System.in);
         System.out.print("Como deseja ser chamado?\t");
@@ -46,9 +67,8 @@ public class Main {
 
         try {
             while (opcao != 0) {
-                System.out.println("\n" + dev.getNome() +
-                        ", o que gostaria de fazer? 1. Inscrever-se num bootcamp, 2. Ver bootcamps inscritos, 3. Ver progresso, 4.Fazer aula, 0. Sair");
-                // ver xp, fazer aula; concluir aula
+                System.out.println("\n" + dev.getNome()
+                        + ", o que gostaria de fazer? 1. Inscrever-se num bootcamp, 2. Cancelar inscrição, 3. Ver progresso, 4.Fazer aula, 0. Sair");
                 opcao = scanner.nextInt();
                 scanner.nextLine();
 
@@ -77,7 +97,7 @@ public class Main {
                                 }
                                 if (!jaInscrito) {
                                     dev.inscreverBootCamp(bootcampJava);
-                                    System.out.println("Bootcamp Java: inscrição feita com sucesso!");
+                                    System.out.println("Inscrição feita com sucesso! " + bootcampJava.getNome());
                                 }
                                 break;
                             case 2:
@@ -91,7 +111,7 @@ public class Main {
                                 }
                                 if (!jaInscritoJS) {
                                     dev.inscreverBootCamp(bootcampJS);
-                                    System.out.println("Bootcamp Java: inscrição feita com sucesso!");
+                                    System.out.println("Inscrição feita com sucesso! " + bootcampJS.getNome());
                                 }
                                 break;
                             case 0:
@@ -103,33 +123,41 @@ public class Main {
                         }
                         break;
                     case 2:
-                        if (dev.getConteudosInscritos().isEmpty()) {
-                            System.out.println("Você não está inscrito em nenhum bootcamp");
+                        if (dev.getBootcampsInscritos().isEmpty()) {
+                            System.out.println("Nenhum Bootcamp encontrado.");
                         } else {
-                            System.out.println("\nVocê se inscreveu nos seguintes bootcamps:\n");
-                            for (Bootcamp bootcamp : dev.getBootcampsInscritos()) {
-                                System.out.println(bootcamp.getNome());
-                                for (Conteudo curso : bootcamp.getConteudos()) {
-                                    System.out.println(curso);
+                            for (Bootcamp bc : dev.getBootcampsInscritos()) {
+                                System.out.println("Bootcamp:\t" + bc.getNome());
+                                System.out.println("Deseja cancelar a inscrição? 1. Sim, 2. Não");
+                                int opcaoCancelar = scanner.nextInt();
+                                switch (opcaoCancelar) {
+                                    case 1:
+                                        dev.cancelarInscricao(bc);
+                                        System.out.println("Bootcamp " + bc.getNome() + " cancelado com sucesso!");
+                                        break;
+                                    default:
+                                        break;
                                 }
-                                System.out.println("\n-------\n");
                             }
                         }
                         break;
                     case 3:
-                        if (dev.getConteudosInscritos().isEmpty()) {
-                            System.out.println("Você não está inscrito em nenhum bootcamp");
+                        if (dev.getConteudosInscritos().isEmpty()&&dev.getConteudosConcluidos().size()==0) {
+                            System.out.println("Inscreva-se em um bootcamp:");
                             break;
                         } else {
                             System.out.println("\nVeja o seu progresso:\n");
                             dev.verProgresso();
                             if (dev.getConteudosInscritos().size() == 0) {
                                 System.out.println("\nVocê concluiu todos os conteúdos do bootcamp!");
+                                //quando finaliza cancela a inscrição:
+                                dev.cancelarInscricao(bootcampJS);
                             } else {
                                 System.out.println(
-                                        "Você ainda tem que concluir os seguintes conteúdos:\n");
+                                        "O próximo conteúdo a fazer é:\n");
                                 for (Conteudo aFazer : dev.getConteudosInscritos()) {
                                     System.out.println(aFazer);
+                                    break;
                                 }
                             }
                         }
@@ -141,13 +169,12 @@ public class Main {
                         } else {
                             dev.progredir();
                             System.out.println("Parabéns, mais um conteúdo concluído!");
-                            System.out.println("A seguir, os cursos concluídos:");
-                            dev.getConteudosConcluidos().forEach(System.out::print);
+                            System.out.println("Total de XP:\t" + (dev.calcularTotalXp()));
                             System.out.println();
                         }
                         if (dev.getConteudosInscritos().size() == 0) {
                             System.out.println("-----------Você fez todos os conteúdos do bootcamp!-----------");
-                            System.out.println("--------------Bootcamp concluído com sucesso!!-----------------");
+                            System.out.println("**********Bootcamp concluído com sucesso!!**********");
                         }
                         break;
                     case 0:
@@ -158,10 +185,13 @@ public class Main {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             System.out.println("Entrada inválida.");
         } finally {
             scanner.close();
         }
     }
+
 }
